@@ -1,3 +1,7 @@
+  <!--
+【労災保険給付請求書作成webプログラム】
+ -->
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,25 +11,24 @@
 <script src="https://cloudflare.com"></script>
 <script src="https://jsdelivr.net"></script>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f3f4f6; color: #1f2937; margin: 0; padding: 0; }
-.container { max-width: 800px; margin: 0 auto; padding: 16px; }
-.header { text-align: center; margin-bottom: 24px; }
-.header h1 { color: #1d4ed8; font-size: 24px; margin: 0; font-weight: bold; }
-.header p { font-size: 11px; color: #4b5563; margin-top: 8px; }
-.tabs { display: flex; background: white; border-radius: 8px 8px 0 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-bottom: 1px solid #e5e7eb; overflow: hidden; }
-.tab-btn { flex: 1; padding: 12px; text-align: center; background: none; border: none; font-size: 14px; font-weight: bold; cursor: pointer; color: #4b5563; transition: all 0.2s; }
+body { font-family: sans-serif; background-color: #f3f4f6; color: #1f2937; margin: 0; padding: 0; }
+.container { max-width: 600px; margin: 0 auto; padding: 16px; }
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 { color: #1d4ed8; font-size: 22px; margin: 0; }
+.tabs { display: flex; background: white; border-radius: 8px 8px 0 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-bottom: 1px solid #e5e7eb; }
+.tab-btn { flex: 1; padding: 12px; text-align: center; background: none; border: none; font-size: 14px; font-weight: bold; cursor: pointer; color: #4b5563; }
 .tab-btn.active { color: #2563eb; border-bottom: 3px solid #2563eb; background-color: #eff6ff; }
-.card { background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; display: flex; flex-direction: column; gap: 16px; }
-.section-title { font-size: 16px; font-weight: bold; color: #374151; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin: 0; }
-.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.card { background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; display: flex; flex-direction: column; gap: 14px; }
+.section-title { font-size: 15px; font-weight: bold; color: #374151; border-left: 4px solid #2563eb; padding-left: 8px; margin: 0; }
 .form-group { display: flex; flex-direction: column; gap: 4px; }
 .form-group label { font-size: 12px; font-weight: bold; color: #4b5563; }
-.form-group input, .form-group select { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; background: white; }
-.alert-info { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 4px; font-size: 13px; }
-.btn-blue { background-color: #2563eb; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; text-align: center; text-decoration: none; display: block; box-sizing: border-box; }
-.btn-green { background-color: #16a34a; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; }
-.list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; gap: 8px; flex-wrap: wrap; }
-.btn-action { text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; border: none; cursor: pointer; }
+.badge-req { background: #ef4444; color: white; font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-left: 4px; }
+.badge-opt { background: #9ca3af; color: white; font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-left: 4px; }
+.form-group input, .form-group select { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; }
+.btn-blue { background-color: #2563eb; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; }
+.btn-green { background-color: #16a34a; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+.list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; }
+.btn-action { text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
 .bg-blue { background-color: #3b82f6; }
 .bg-gray { background-color: #4b5563; }
 </style>
@@ -34,144 +37,93 @@ body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-co
 <div id="app" class="container">
     <header class="header">
         <h1>労災保険様式第8号 PDF一括作成</h1>
-        <p>※入力された情報は暗号化されずブラウザ（LocalStorage）にのみ安全に保存されます。</p>
     </header>
     <div class="tabs">
         <button @click="currentTab = 'form'" :class="{active: currentTab === 'form'}" class="tab-btn">📝 書類作成</button>
-        <button @click="currentTab = 'config'" :class="{active: currentTab === 'config'}" class="tab-btn">⚙️ 初期設定</button>
+        <button @click="currentTab = 'config'" :class="{active: active: currentTab === 'config'}" class="tab-btn">⚙️ 初期設定</button>
     </div>
-    <div v-show="currentTab === 'config'" class="card">
-        <h2 class="section-title">🏢 基本情報の初期設定</h2>
-        <div class="grid-2">
-            <div class="form-group"><label>労働保険番号</label><input v-model="config.rouhai_num" type="text" placeholder="例: 12-3-45-678901-234"></div>
-            <div class="form-group"><label>年年金コード</label><input v-model="config.nenkin_code" type="text" placeholder="あれば入力"></div>
-            <div class="form-group"><label>氏名（フリガナ）</label><input v-model="config.name_kana" type="text" placeholder="例: モモタロウ"></div>
-            <div class="form-group"><label>氏名</label><input v-model="config.name" type="text" placeholder="例: 桃 太郎"></div>
-            <div class="form-group"><label>生年月日</label><input v-model="config.birth" type="date"></div>
-            <div class="form-group"><label>郵便番号・住所</label><input v-model="config.address" type="text" placeholder="例: 広島市安佐南区..."></div>
-            <div class="form-group"><label>電話番号</label><input v-model="config.tel" type="tel" placeholder="例: 090-XXXX-XXXX"></div>
-            <div class="form-group"><label>次回申請の回数（初期値）</label><input v-model.number="config.next_count" type="number"></div>
-        </div>
-        <h2 class="section-title">🏥 医療機関情報の初期設定</h2>
-        <div class="grid-2">
-            <div class="form-group"><label>病院の名称</label><input v-model="config.hospital_name" type="text"></div>
-            <div class="form-group"><label>病院の所在地（住所）</label><input v-model="config.hospital_address" type="text"></div>
-            <div class="form-group"><label>病院の電話番号</label><input v-model="config.hospital_tel" type="tel"></div>
-        </div>
-        <h2 class="section-title">🏦 振込口座の初期設定</h2>
-        <div class="grid-2">
-            <div class="form-group"><label>金融機関名</label><input v-model="config.bank_name" type="text"></div>
-            <div class="form-group"><label>支店名</label><input v-model="config.bank_branch" type="text"></div>
-            <div class="form-group"><label>口座種別</label><select v-model="config.bank_type"><option value="普通">普通</option><option value="当座">当座</option></select></div>
-            <div class="form-group"><label>口座番号</label><input v-model="config.bank_account" type="text"></div>
-            <div class="form-group"><label>口座名義（フリガナ）</label><input v-model="config.bank_owner" type="text"></div>
-        </div>
-        <h2 class="section-title">🏢 災害時事業所の初期設定</h2>
-        <div class="grid-2">
-            <div class="form-group"><label>事業所の名称（会社名）</label><input v-model="config.company_name" type="text"></div>
-            <div class="form-group"><label>事業所の所在地</label><input v-model="config.company_address" type="text"></div>
-        </div>
-        <h2 class="section-title">📄 印刷設定の保持</h2>
-        <div class="form-group">
-            <label>デフォルト出力ページ数</label>
-            <select v-model="config.page_setting" style="width: 200px;"><option value="2">2ページ (提出用のみ)</option><option value="4">4ページ (注意書き含む)</option></select>
-        </div>
-        <div style="margin-top: 8px;"><button @click="saveConfig" class="btn-green">設定を保存する</button></div>
-    </div>
+
+    <!-- タブ1: 書類作成画面 -->
     <div v-show="currentTab === 'form'" class="card">
-        <div>
-            <h2 class="section-title" style="margin-bottom: 12px;">📅 申請期間の設定</h2>
-            <div class="alert-info grid-2" style="background-color: #eff6ff; padding: 12px; border-radius: 6px;">
-                <div class="form-group"><label>一括作成の開始日</label><input v-model="form.start_date" type="date"></div>
-                <div class="form-group"><label>一括作成の終了日</label><input v-model="form.end_date" type="date"></div>
-            </div>
-            <p style="font-size: 11px; color: #6b7280; margin-top: 6px; margin-bottom: 0;">※指定された全期間を1ヶ月単位（月末区切り）で自動分割し、複数月分をまとめて生成します。</p>
+        <h2 class="section-title">📅 申請期間の設定</h2>
+        <div class="form-group"><label>一括作成の開始日<span class="badge-req">必須</span></label><input v-model="form.start_date" type="date"></div>
+        <div class="form-group"><label>一括作成の終了日<span class="badge-req">必須</span></label><input v-model="form.end_date" type="date"></div>
+        <div class="form-group">
+            <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" v-model="form.print_hospital" style="width:16px; height:16px;">
+                <span>病院の情報（名称・住所）を自動印字する</span>
+            </label>
         </div>
-        <div>
-            <h2 class="section-title" style="margin-bottom: 8px;">⚕️ 医師記入欄の自動印字設定</h2>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;"><input type="checkbox" v-model="form.print_hospital" style="width: 16px; height: 16px;"><span>医療機関の情報をあらかじめ印字する</span></label>
-        </div>
-        <div style="margin-top: 8px;">
-            <button @click="generatePDFs" :disabled="isProcessing" class="btn-blue">{{ isProcessing ? 'PDFファイルを生成中...' : '📥 PDFを一括生成してダウンロード' }}</button>
-        </div>
-        <div v-if="pdfUrls.length > 0"
+        <button @click="generatePDFs" class="btn-blue">📥 PDFを一括生成してダウンロード</button>
 
-
- style="margin-top: 8px; border-top: 1px solid #e5e7eb; padding-top: 16px;">
-            <h3 style="font-size: 16px; margin: 0 0 12px 0; color: #374151;">📄 生成されたPDFファイル一覧</h3>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div v-if="pdfUrls.length > 0" style="margin-top: 10px; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+            <h3 style="font-size: 14px; margin: 0 0 10px 0;">📄 生成されたPDF一覧</h3>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
                 <div v-for="(item, index) in pdfUrls" :key="index" class="list-item">
-                    <div style="font-size: 14px;"><strong style="color: #1d4ed8;">【第{{ item.count }}回】</strong> <span>{{ item.period }} 分</span></div>
-                    <div style="display: flex; gap: 8px;">
-                        <a :href="item.url" :download="item.filename" class="btn-action bg-blue">ダウンロード</a>
-                        <button @click="previewPdf(item.url)" class="btn-action bg-gray">画面に表示</button>
+                    <div style="font-size: 13px;"><strong>【第{{ item.count }}回】</strong> {{ item.period }}</div>
+                    <div style="display: flex; gap: 6px;">
+                        <a :href="item.url" :download="item.filename" class="btn-action bg-blue">保存</a>
+                        <button @click="previewPdf(item.url)" class="btn-action bg-gray">表示</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-if="activePreviewUrl" style="margin-top: 16px; border: 2px solid #d1d5db; padding: 4px; background: #e5e7eb; border-radius: 6px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; background: white; padding: 6px; border-radius: 4px;"><span style="font-size: 12px; font-weight: bold;">📄 プレビュー画面</span><button @click="activePreviewUrl = null" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">閉じる</button></div>
-            <iframe :src="activePreviewUrl" style="width: 100%; height: 400px; border: none; background: white;"></iframe>
+        <div v-if="activePreviewUrl" style="margin-top: 10px; border: 2px solid #d1d5db; background: #e5e7eb; padding: 4px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; padding: 4px; background: white;"><span style="font-size:12px; font-weight:bold;">📄 プレビュー</span><button @click="activePreviewUrl = null" style="background:#ef4444; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:11px;">閉じる</button></div>
+            <iframe :src="activePreviewUrl" style="width: 100%; height: 350px; border: none; background: white;"></iframe>
         </div>
     </div>
+
+    <!-- タブ2: 初期設定画面 -->
+    <div v-show="currentTab === 'config'" class="card">
+        <h2 class="section-title"
+
+
+>👤 基本情報（空欄のままでもOK）</h2>
+        <div class="form-group"><label>氏名<span class="badge-opt">任意</span></label><input v-model="config.name" type="text"></div>
+        <div class="form-group"><label>郵便番号・住所<span class="badge-opt">任意</span></label><input v-model="config.address" type="text"></div>
+        <div class="form-group"><label>次回申請の回数<span class="badge-req">必須</span></label><input v-model.number="config.next_count" type="number"></div>
+        
+        <h2 class="section-title">🏥 医療機関情報</h2>
+        <div class="form-group"><label>病院の名称<span class="badge-opt">任意</span></label><input v-model="config.hospital_name" type="text"></div>
+        <div class="form-group"><label>病院の所在地（住所）<span class="badge-opt">任意</span></label><input v-model="config.hospital_address" type="text"></div>
+        
+        <button @click="saveConfig" class="btn-green">⚙️ 設定を保存する</button>
+    </div>
 </div>
+
 <script>
 const { createApp, ref, onMounted } = Vue;
 createApp({
     setup() {
-        const currentTab = ref('form'); const isProcessing = ref(false); const pdfUrls = ref([]); const activePreviewUrl = ref(null);
-        const config = ref({ rouhai_num: '', nenkin_code: '', name_kana: '', name: '', birth: '', address: '', tel: '', next_count: 1, hospital_name: '', hospital_address: '', hospital_tel: '', bank_name: '', bank_branch: '', bank_type: '普通', bank_account: '', bank_owner: '', company_name: '', company_address: '', page_setting: '2' });
-        const form = ref({ start_date: '', end_date: '', print_hospital: true });
-
-onMounted(() => { const saved = localStorage.getItem('rousai_maker_config'); if (saved) { try { config.value = JSON.parse(saved); } catch(e) { console.error(e); } } });
-const saveConfig = () => { localStorage.setItem('rousai_maker_config', JSON.stringify(config.value)); alert('設定を保存したよ！これで次回からも自動で読み込まれるけぇね。'); currentTab.value = 'form'; };
-const previewPdf = (url) => { activePreviewUrl.value = url; };
-const generatePeriods = (startStr, endStr) => {
-let start = new Date(startStr); let end = new Date(endStr); let periods = [];
-if (isNaN(start) || isNaN(end) || start > end) return periods;
-let currentStart = new Date(start);
-while (currentStart <= end) {
-let currentEnd = new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 0);
-if (currentEnd > end) { currentEnd = new Date(end); }
-periods.push({ start: new Date(currentStart), end: new Date(currentEnd) });
-currentStart = new Date(currentEnd.getFullYear(), currentEnd.getMonth() + 1, 1);
-}
-return periods;
-};
-const generatePDFs = async () => {
-if (!form.value.start_date || !form.value.end_date) { alert('開始日と終了日を両方選んでね！'); return; }
-isProcessing.value = true; pdfUrls.value = []; activePreviewUrl.value = null;
-try {
-const periods = generatePeriods(form.value.start_date, form.value.end_date);
-if (periods.length === 0) { alert('期間の設定が正しくないみたいよ。確認してみてね。'); isProcessing.value = false; return; }
-let currentCount = parseInt(config.value.next_count) || 1;
-for (let i = 0; i < periods.length; i++) {
-const period = periods[i]; const pdfDoc = await PDFLib.PDFDocument.create(); let pageCount = parseInt(config.value.page_setting) || 2;
-for(let p=0; p<pageCount; p++){
-const page = pdfDoc.addPage([595.27, 841.89]);
-if (p === 0) {
-const mm = 2.83465;
-page.drawText(第 ${currentCount} 回, { x: 30mm, y: 270mm, size: 12 });
-const startStr = ${period.start.getFullYear()}/${period.start.getMonth()+1}/${period.start.getDate()};
-const endStr = ${period.end.getFullYear()}/${period.end.getMonth()+1}/${period.end.getDate()};
-page.drawText(${startStr} ～ ${endStr}, { x: 50mm, y: 210mm, size: 10 });
-page.drawText(config.value.name || '', { x: 40mm, y: 240mm, size: 11 });
-page.drawText(config.value.address || '', { x: 40mm, y: 225mm, size: 9 });
-if (form.value.print_hospital) {
-page.drawText(config.value.hospital_name || '', { x: 40mm, y: 80mm, size: 10 });
-page.drawText(config.value.hospital_address || '', { x: 40mm, y: 70mm, size: 9 });
-}
-}
-}
-const pdfBytes = await pdfDoc.save(); const blob = new Blob([pdfBytes], { type: 'application/pdf' }); const url = URL.createObjectURL(blob);
-const pStart = ${period.start.getFullYear()}年${period.start.getMonth()+1}月${period.start.getDate()}日;
-const pEnd = ${period.end.getFullYear()}年${period.end.getMonth()+1}月${period.end.getDate()}日;
-pdfUrls.value.push({ count: currentCount, period: ${pStart} ～ ${pEnd}, url: url, filename: rousai_8go_count${currentCount}.pdf });
-currentCount++;
-}
-config.value.next_count = currentCount; localStorage.setItem('rousai_maker_config', JSON.stringify(config.value));
-} catch (error) { console.error(error); alert('ごめん、PDFの生成中にちょっとエラーが出ちゃったみたい。'); } finally { isProcessing.value = false; }
-};
-return { currentTab, config, form, isProcessing, pdfUrls, activePreviewUrl, saveConfig, generatePDFs, previewPdf };
-}
+        const currentTab = ref('form'); const pdfUrls = ref([]); const activePreviewUrl = ref(null);
+        const config = ref({ name: 'テスト 太郎', address: '広島県広島市...', next_count: 50, hospital_name: '広島中央病院', hospital_address: '広島市中区...' });
+        const form = ref({ start_date: '2026-01-01', end_date: '2026-03-31', print_hospital: true });
+        onMounted(() => { const saved = localStorage.getItem('rousai_config_v2'); if (saved) { try { config.value = JSON.parse(saved); } catch(e) {} } });
+        const saveConfig = () => { localStorage.setItem('rousai_config_v2', JSON.stringify(config.value)); alert('設定を保存したよ！'); currentTab.value = 'form'; };
+        const previewPdf = (url) => { activePreviewUrl.value = url; };
+        const generatePDFs = async () => {
+            if (!form.value.start_date || !form.value.end_date) { alert('日付を選んでね'); return; }
+            pdfUrls.value = []; let start = new Date(form.value.start_date); let end = new Date(form.value.end_date); let periods = []; let cur = new Date(start);
+            while (cur <= end) {
+                let mEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0); if (mEnd > end) mEnd = new Date(end);
+                periods.push({ s: new Date(cur), e: new Date(mEnd) }); cur = new Date(mEnd.getFullYear(), mEnd.getMonth() + 1, 1);
+            }
+            let count = parseInt(config.value.next_count) || 1;
+            for (let p of periods) {
+                const doc = await PDFLib.PDFDocument.create(); const page = doc.addPage([595.27, 841.89]); const mm = 2.83465;
+                page.drawText(`第 ${count} 回`, { x: 30*mm, y: 270*mm, size: 12 });
+                page.drawText(`${p.s.getFullYear()}/${p.s.getMonth()+1}/${p.s.getDate()} ~ ${p.e.getFullYear()}/${p.e.getMonth()+1}/${p.e.getDate()}`, { x: 50*mm, y: 210*mm, size: 10 });
+                page.drawText(config.value.name || '', { x: 40*mm, y: 240*mm, size: 11 });
+                if (form.value.print_hospital) { page.drawText(config.value.hospital_name || '', { x: 40*mm, y: 80*mm, size: 10 }); }
+                const bytes = await doc.save(); const blob = new Blob([bytes], { type: 'application/pdf' });
+                pdfUrls.value.push({ count: count, period: `${p.s.getMonth()+1}月分`, url: URL.createObjectURL(blob), filename: `rousai_count${count}.pdf` });
+                count++;
+            }
+        };
+        return { currentTab, config, form, pdfUrls, activePreviewUrl, saveConfig, previewPdf, generatePDFs };
+    }
 }).mount('#app');
+</script>
+</body>
+</html>
